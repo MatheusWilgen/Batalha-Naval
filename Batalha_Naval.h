@@ -3,9 +3,7 @@
 
 
 void JOGO();
-void Mostra_Campo(char Campo[15][15]);
-
-
+void Inicia_Campo(char Campo[15][15]);
 
 
 

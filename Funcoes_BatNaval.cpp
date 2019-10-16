@@ -6,23 +6,28 @@ using namespace std;
 void JOGO()
 {
     char Campo[15][15];
-    
-    Mostra_Campo(Campo);
+    Inicia_Campo(Campo);
 
 }
 
-void Mostra_Campo(char Campo[15][15])
+void Inicia_Campo(char Campo[15][15])
 {
     //enche todos os espaços com caracter 'a'
-    for(int i=0; i<15; i++){
-        for(int j=0; j<15; j++){
-            Campo[i][j] = 'a';
+    for(int linha = 0; linha < 15; linha++){
+        for(int coluna = 0; coluna < 15; coluna++){
+            Campo[linha][coluna] = 'a';
+        }
+    //mostrando campo por enquanto    
+    }
+    for(int linha = 0 ; linha < 15; linha++){
+        for(int coluna = 0 ; coluna < 15 ; coluna++){
+            cout << Campo[linha][coluna];
+            if(coluna==14){cout << endl;}
         }
     }
-    for(int i = 0 ; i < 15; i++){
-        for(int j = 0 ; j < 15 ; j++){
-            if(j==14){cout << endl;}
-            cout << Campo[i][j];
-        }
-    }
+}
+
+void Colocar_Barcos(char Campo[15][15])
+{
+    
 }
