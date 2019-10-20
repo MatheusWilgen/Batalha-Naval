@@ -8,8 +8,11 @@ void JOGO()
 {
     char Campo[15][15];
     Inicia_Campo(Campo);
+    Distribui_barcos(Campo);
     //Imprime_Campo(Campo);
-    Colocar_Barco(Campo,'F','V');
+    // Colocar_Barco(Campo,'F','V');
+    // Colocar_Barco(Campo,'+','H');
+    // Colocar_Barco(Campo,'C','D');
     Imprime_Campo(Campo);
 
 }
@@ -61,23 +64,72 @@ void Colocar_Barco(char Campo[][15], char Que_barco, char Orientacao)
     if(Que_barco == 'P'){
         tamanho_barco = 4;
     }
-    //variaveis para linha e coluna
-    int linha, coluna;
+    //variaveis para linha e coluna e para tratar a sobreposicao
+    int linha, coluna, disponivel = 0;
+    //Tratando cada possibilidade de inserir barco
+
+    //Colocando o barco Vertical
     if(Orientacao == 'V'){
-        Posicao_correta(&linha,&coluna,tamanho_barco, 'V');
-        //Colocando o barco Vertical
+        //verificando se nao ha sobreposicao e se a insersao nao sai do campo
+        while(disponivel != tamanho_barco){
+            disponivel = 0;
+            Posicao_correta(&linha,&coluna,tamanho_barco, 'V');
+            for(int i = 0; i < tamanho_barco; i++){
+                if(Campo[linha+i][coluna]=='~'){
+                    disponivel++;
+                }
+            }
+        }
+        //tudo ok, insero o barco vertical
         for(int i = 0; i < tamanho_barco; i++){
             Campo[linha+i][coluna] = Que_barco;
         }
     }
+    
+    //Colocando o barco na horizontal
     if(Orientacao == 'H'){
-        Posicao_correta(&linha,&coluna,tamanho_barco, 'H');
-        //Colocando o barco na Horizontal
+        //verificando se nao ha sobreposicao
+        while(disponivel != tamanho_barco){
+            disponivel = 0;
+            Posicao_correta(&linha,&coluna,tamanho_barco, 'H');
+            for(int i = 0; i < tamanho_barco; i++){
+                if(Campo[linha][coluna + i]=='~'){
+                    disponivel++;
+                }
+            }
+        }
+        //tudo ok, inserindo o barco horizontal
         for(int i = 0; i < tamanho_barco; i++){
             Campo[linha][coluna + i] = Que_barco;
         }
     }
+
+    //Colocando o barco na diagonal
+    if(Orientacao == 'D'){
+        //verificando se nao ha sobreposicao
+        int i=0,j=0;
+        while(disponivel != tamanho_barco){
+            disponivel = 0;
+            i=0;j=0;
+            Posicao_correta(&linha,&coluna,tamanho_barco,'D');
+            while(i<tamanho_barco && j<tamanho_barco){
+                if(Campo[linha+i][coluna+j] == '~'){
+                    disponivel++;
+                }
+                i++;
+                j++;
+            }
+        }
+        //Tudo certo, insere o barco na diagonal
+        i=0;j=0;
+        while(i<tamanho_barco && j<tamanho_barco){
+            Campo[linha+i][coluna+j] = Que_barco;
+            i++;
+            j++;
+        }
+    }
 }
+//Entrega uma posicao aleatoria e ja trata se ela nao tera problema
 void Posicao_correta(int *linha,int *coluna,int tamanho_barco,char Orientacao)
 {
     bool posicao_possivel = false;
@@ -98,6 +150,24 @@ void Posicao_correta(int *linha,int *coluna,int tamanho_barco,char Orientacao)
         }
     }
     if(Orientacao == 'D'){
-        
+        while(posicao_possivel==false){
+            *coluna = experimental::randint(0,14);
+            *linha = experimental::randint(0,14);
+            if((14 - *coluna >= tamanho_barco) && (14 - *linha >= tamanho_barco)){posicao_possivel = true;}
+        }
     }
+}
+
+//Funcao que gerencia a disposicao dos barcos
+void Distribui_barcos(char Campo[][15])
+{
+    for(int i=0; i<3; i++){
+        Colocar_Barco(Campo,'F','V');
+        Colocar_Barco(Campo,'B','V');
+    }
+    for(int i=0; i<2; i++){
+        Colocar_Barco(Campo,'C','H');
+        Colocar_Barco(Campo,'+','H');
+    }
+    Colocar_Barco(Campo,'P','D');
 }
