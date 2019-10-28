@@ -1,7 +1,7 @@
 all: Jogar_Batalha_Naval
 
 Jogar_Batalha_Naval: Main.cpp Funcoes_BatNaval.cpp
-	g++ Main.cpp Funcoes_BatNaval.cpp -o Jogar_Batalha_Naval -Wall 
+	g++ Main.cpp Funcoes_BatNaval.cpp Tabuleiro.cpp -o Jogar_Batalha_Naval -Wall 
 
 run:
 	clear
