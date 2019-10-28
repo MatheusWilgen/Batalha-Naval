@@ -4,7 +4,7 @@
 
 using namespace std;
 
-//Inicia o Tabuleiro com o mar '~' 
+// o Tabuleiro com o mar '~' 
 void Tabuleiro::Inicia_Campo(char Campo[][15])
 {
     //enche todos os espaços com caracter '~'
@@ -16,7 +16,7 @@ void Tabuleiro::Inicia_Campo(char Campo[][15])
 }
 
 //Imprime o campo na tela
-void Tabuleiro::Imprime_Campo(char Campo[][15])
+void Tabuleiro::Imprime_Campo_Mascara()
 {  
     cout << "   A B C D E F G H I J K L M N O" << endl;
     for(int linha = 0 ; linha < 15; linha++){
@@ -26,7 +26,38 @@ void Tabuleiro::Imprime_Campo(char Campo[][15])
             cout << linha+1 << ' ';
         }
         for(int coluna = 0 ; coluna < 15 ; coluna++){
-            cout << Campo[linha][coluna] << ' ';
+            cout << Campo_Mascara[linha][coluna] << ' ';
+            if(coluna==14){cout << endl;}
+        }
+    }
+}
+void Tabuleiro::Imprime_Campo()
+{
+    cout << "   A B C D E F G H I J K L M N O" << endl;
+    for(int linha = 0 ; linha < 15; linha++){
+        if(linha < 9){
+            cout << ' ' <<linha+1 << ' ';
+        }else{
+            cout << linha+1 << ' ';
+        }
+        for(int coluna = 0 ; coluna < 15 ; coluna++){
+            cout << Campo_Secreto[linha][coluna] << ' ';
+            if(coluna==14){cout << endl;}
+        }
+    }
+}
+
+void Tabuleiro::Imprime_Campo_inteiros()
+{  
+    cout << "   A B C D E F G H I J K L M N O" << endl;
+    for(int linha = 0 ; linha < 15; linha++){
+        if(linha < 9){
+            cout << ' ' <<linha+1 << ' ';
+        }else{
+            cout << linha+1 << ' ';
+        }
+        for(int coluna = 0 ; coluna < 15 ; coluna++){
+            cout << Campo_Codigos[linha][coluna] << ' ';
             if(coluna==14){cout << endl;}
         }
     }
@@ -38,7 +69,7 @@ void Tabuleiro::Imprime_Campo(char Campo[][15])
 //'C' - Contratorpedeiro
 //'+' - Cruzador
 //'P' - Porta avioes
-void Tabuleiro::Colocar_Barco(char Campo[][15], char Que_barco, char Orientacao)
+void Tabuleiro::Colocar_Barco(char Campo[][15],int Campo2[][15], char Que_barco, char Orientacao,int codigoBarco)
 {
     int tamanho_barco;
     //Definindo o tamanho do barco
@@ -67,9 +98,11 @@ void Tabuleiro::Colocar_Barco(char Campo[][15], char Que_barco, char Orientacao)
                 }
             }
         }
+        
         //tudo ok, insero o barco vertical
         for(int i = 0; i < tamanho_barco; i++){
             Campo[linha+i][coluna] = Que_barco;
+            Campo2[linha+i][coluna] = codigoBarco;
         }
     }
     
@@ -88,6 +121,7 @@ void Tabuleiro::Colocar_Barco(char Campo[][15], char Que_barco, char Orientacao)
         //tudo ok, inserindo o barco horizontal
         for(int i = 0; i < tamanho_barco; i++){
             Campo[linha][coluna + i] = Que_barco;
+            Campo2[linha][coluna+i] = codigoBarco;
         }
     }
 
@@ -111,6 +145,7 @@ void Tabuleiro::Colocar_Barco(char Campo[][15], char Que_barco, char Orientacao)
         i=0;j=0;
         while(i<tamanho_barco && j<tamanho_barco){
             Campo[linha+i][coluna+j] = Que_barco;
+            Campo2[linha+i][coluna+j] = codigoBarco;
             i++;
             j++;
         }
@@ -146,15 +181,44 @@ void Tabuleiro::Posicao_correta(int *linha,int *coluna,int tamanho_barco,char Or
 }
 
 //Funcao que gerencia a disposicao dos barcos
-void Tabuleiro::Distribui_Barcos(char Campo[][15])
+void Tabuleiro::Distribui_Barcos(char Campo[][15],int Campo2[][15])
 {
     for(int i=0; i<3; i++){
-        Colocar_Barco(Campo,'F','V');
-        Colocar_Barco(Campo,'B','V');
+        Colocar_Barco(Campo,Campo2,'F','V',i);
+        Colocar_Barco(Campo,Campo2,'B','V',i+3);
     }
-    for(int i=0; i<2; i++){
-        Colocar_Barco(Campo,'C','H');
-        Colocar_Barco(Campo,'+','H');
+    for(int i=6; i<8; i++){
+        Colocar_Barco(Campo,Campo2,'C','H',i);
+        Colocar_Barco(Campo,Campo2,'+','H',i+2);
     }
-    Colocar_Barco(Campo,'P','D');
+    Colocar_Barco(Campo,Campo2,'P','D',10);
+}
+
+int Tabuleiro::getCampo_inteiros(int x, int y)
+{
+    if(Campo_Codigos[x][y]!=-1){
+        return(Campo_Codigos[x][y]);
+    }
+    return -1;
+}
+
+void Tabuleiro::Inicia_Campointeiros(int Campo[][15])
+{
+    //enche todos os espaços com -1
+    for(int linha = 0; linha < 15; linha++){
+        for(int coluna = 0; coluna < 15; coluna++){
+            Campo[linha][coluna] = -1;
+        }
+    }
+}
+
+void Tabuleiro::setMascara(int linha, int coluna)
+{
+    if(Campo_Codigos[linha][coluna] != -1){
+        cout <<"funciona"<<endl;
+        Campo_Mascara[linha][coluna] = '0';
+    }else{
+        cout <<"funciona 2"<<endl;
+        Campo_Mascara[linha][coluna] = 'X';
+    }
 }
