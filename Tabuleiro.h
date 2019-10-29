@@ -4,11 +4,11 @@
 class Tabuleiro
 {
 public:
-    Tabuleiro(){
+    Tabuleiro(int dificuldade){
         Inicia_Campo(Campo_Secreto);
         Inicia_Campointeiros(Campo_Codigos);
         Inicia_Campo(Campo_Mascara);
-        Distribui_Barcos(Campo_Secreto,Campo_Codigos);
+        Distribui_Barcos(Campo_Secreto,Campo_Codigos,dificuldade);
         //Imprime_Campo();
         //Imprime_Campo_inteiros();
     }
@@ -20,7 +20,7 @@ public:
     void Imprime_Campo();
     void Imprime_Campo_inteiros();
     void Posicao_correta(int *linha,int *coluna,int tamanho_barco,char Orientacao);
-    void Distribui_Barcos(char Campo[][15],int Campo2[][15]);
+    void Distribui_Barcos(char Campo[][15],int Campo2[][15],int dificuldade);
     int  getCampo_inteiros(int x, int y);
     //void setCampo();
 private:

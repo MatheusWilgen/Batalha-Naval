@@ -3,8 +3,7 @@
 int main(void)
 {
 
-    JOGO();
-    
+    MENU();
 
     return 0;
 }

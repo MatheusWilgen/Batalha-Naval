@@ -181,19 +181,57 @@ void Tabuleiro::Posicao_correta(int *linha,int *coluna,int tamanho_barco,char Or
 }
 
 //Funcao que gerencia a disposicao dos barcos
-void Tabuleiro::Distribui_Barcos(char Campo[][15],int Campo2[][15])
+void Tabuleiro::Distribui_Barcos(char Campo[][15],int Campo2[][15],int dificuldade)
 {
-    for(int i=0; i<3; i++){
-        Colocar_Barco(Campo,Campo2,'F','V',i);
-        Colocar_Barco(Campo,Campo2,'B','V',i+3);
+    char V[3]={'H','V','D'};
+    int pos;
+    if(dificuldade == 1){
+        pos = experimental::randint(0,1);
+        for(int i=0; i<3; i++){
+            Colocar_Barco(Campo,Campo2,'F',V[pos],i);
+            Colocar_Barco(Campo,Campo2,'B',V[pos],i+3);
+        }
+        for(int i=6; i<8; i++){
+            Colocar_Barco(Campo,Campo2,'C',V[pos],i);
+            Colocar_Barco(Campo,Campo2,'+',V[pos],i+2);
+        }
+        Colocar_Barco(Campo,Campo2,'P',V[pos],10);
     }
-    for(int i=6; i<8; i++){
-        Colocar_Barco(Campo,Campo2,'C','H',i);
-        Colocar_Barco(Campo,Campo2,'+','H',i+2);
+    if(dificuldade == 2){
+        for(int i=0; i<3; i++){
+            pos = experimental::randint(0,1);
+            Colocar_Barco(Campo,Campo2,'F',V[pos],i);
+            pos = experimental::randint(0,1);
+            Colocar_Barco(Campo,Campo2,'B',V[pos],i+3);
+        }
+        for(int i=6; i<8; i++){
+            pos = experimental::randint(0,1);
+            Colocar_Barco(Campo,Campo2,'C',V[pos],i);
+            pos = experimental::randint(0,1);
+            Colocar_Barco(Campo,Campo2,'+',V[pos],i+2);
+        }
+        pos = experimental::randint(0,1);
+        Colocar_Barco(Campo,Campo2,'P',V[pos],10);
     }
-    Colocar_Barco(Campo,Campo2,'P','D',10);
+    if(dificuldade == 3){
+        for(int i=0; i<3; i++){
+            pos = experimental::randint(0,2);
+            Colocar_Barco(Campo,Campo2,'F',V[pos],i);
+            pos = experimental::randint(0,2);
+            Colocar_Barco(Campo,Campo2,'B',V[pos],i+3);
+        }
+        for(int i=6; i<8; i++){
+            pos = experimental::randint(0,2);
+            Colocar_Barco(Campo,Campo2,'C',V[pos],i);
+            pos = experimental::randint(0,2);
+            Colocar_Barco(Campo,Campo2,'+',V[pos],i+2);
+        }
+        pos = experimental::randint(0,2);
+        Colocar_Barco(Campo,Campo2,'P',V[pos],10);
+    }
 }
 
+//Retorna o inteiro que esta na posicao do tabuleiro de codigos
 int Tabuleiro::getCampo_inteiros(int x, int y)
 {
     if(Campo_Codigos[x][y]!=-1){
