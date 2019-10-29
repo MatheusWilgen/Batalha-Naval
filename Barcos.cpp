@@ -22,6 +22,7 @@ void Barco::set_atingido()
 {
     if(vida>0){
         vida--;
+        cout << "\a";//som que bateu no barco
     }
     if(vida==0){
         cout << nome << " foi Destruido (ツ)"<<endl;

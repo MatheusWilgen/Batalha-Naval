@@ -22,7 +22,7 @@ public:
     void Posicao_correta(int *linha,int *coluna,int tamanho_barco,char Orientacao);
     void Distribui_Barcos(char Campo[][15],int Campo2[][15],int dificuldade);
     int  getCampo_inteiros(int x, int y);
-    //void setCampo();
+    int  getCampo_Mascara(int linha,int coluna);
 private:
     char Campo_Secreto[15][15];
     int  Campo_Codigos[15][15];

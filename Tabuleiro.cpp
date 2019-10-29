@@ -253,10 +253,17 @@ void Tabuleiro::Inicia_Campointeiros(int Campo[][15])
 void Tabuleiro::setMascara(int linha, int coluna)
 {
     if(Campo_Codigos[linha][coluna] != -1){
-        cout <<"funciona"<<endl;
         Campo_Mascara[linha][coluna] = '0';
     }else{
-        cout <<"funciona 2"<<endl;
         Campo_Mascara[linha][coluna] = 'X';
     }
+}
+
+//retorna -1 se a posiçao ja recebeu um tiro ou 1 se nao recebeu ainda
+int Tabuleiro::getCampo_Mascara(int linha,int coluna)
+{
+    if(Campo_Mascara[linha][coluna] != '~'){
+        return -1;
+    }
+    return 1;
 }
