@@ -17,19 +17,18 @@ void MENU()
     cout<< "Para sair digite 0"<<endl<<endl;
 
     //outras opçoes
-
+   
     cin >> opcao;
-    switch(opcao)
-    {
-        case(0):
+        if(0)
             return;
-        case(1):
+        if(opcao == 1){
             nivel = dificuldade();
             JOGO_SOZINHO(nivel);
-        case(2):
+        }
+        if(opcao == 2){
             nivel = dificuldade();
             JOGO_EM_DUPLA(nivel);
-    }
+        }
 
 }
 
@@ -46,27 +45,23 @@ int dificuldade()
     return a;
 }
 
-//Função principal para o jogar sozinho
+//Função principal para jogar sozinho
 void JOGO_SOZINHO(int dificuldade)
 {
     system("clear");
     Barco V[11];
     Vetor_de_Barcos(V);
     Tabuleiro tabuleiro(dificuldade);
-    int num_tiros = 50;
-    int a=-2;
+    int num_tiros = 50, a=-2;
     do
     {
         system("clear");
-        tabuleiro.Imprime_Campo_Mascara();
-        a = ATIRAR(&tabuleiro,&num_tiros);
-        //tabuleiro.Imprime_Campo();
         Onde_atirou(a,V);
-        if(a==-1){
-            cout<<"tiro na agua"<<endl;
-        }else{
-            cout<<"tiro no navio"<<endl;
-        }   
+        tabuleiro.Imprime_Campo_Mascara();
+        tabuleiro.Imprime_Campo();
+        a = ATIRAR(&tabuleiro,&num_tiros);
+        
+        //tabuleiro.Imprime_Campo();
     } while (a != -10);
     system("clear");
     tabuleiro.Imprime_Campo();
@@ -76,46 +71,29 @@ void JOGO_SOZINHO(int dificuldade)
 void JOGO_EM_DUPLA(int dificuldade)
 {
     //Criacao do ambiente
-    system("clear");
     Barco V[11],V2[11];
     Vetor_de_Barcos(V);
     Vetor_de_Barcos(V2);
-    Tabuleiro tabuleiro(dificuldade);
-    Tabuleiro tabuleiro2(dificuldade);
+    Tabuleiro tabuleiro(dificuldade), tabuleiro2(dificuldade);
     int num_tiros  = 50, num_tiros2 = 50, a=-2,a2=-2;
-
-    system("clear");
-        cout<<"Campo do Jogador 1"<<endl;
-        tabuleiro.Imprime_Campo_Mascara();
-        cout<<"Campo do Jogador 2"<<endl;
-        tabuleiro2.Imprime_Campo_Mascara();
-        cout << "Jogador 1 Atire!!"<<endl;
-        a = ATIRAR(&tabuleiro,&num_tiros);
-        system("clear");
-        cout<<"Campo do Jogador 1"<<endl;
-        Onde_atirou(a,V);
-        tabuleiro.Imprime_Campo_Mascara();
-        cout<<"Campo do Jogador 2"<<endl;
-        tabuleiro2.Imprime_Campo_Mascara();
-        cout << "Jogador 2 Atire!!"<<endl;
-        a2 = ATIRAR(&tabuleiro2,&num_tiros2);
+    
     do
     {
         system("clear");
         cout<<"Campo do Jogador 1"<<endl;
-        Onde_atirou(a,V);
+        Onde_atirou(a,V);a = -2;
         tabuleiro.Imprime_Campo_Mascara();
         cout<<"Campo do Jogador 2"<<endl;
-        Onde_atirou(a2,V2);
+        Onde_atirou(a2,V2);a2 = -2;
         tabuleiro2.Imprime_Campo_Mascara();
         cout << "Jogador 1 Atire!!"<<endl;
         a = ATIRAR(&tabuleiro,&num_tiros);
         system("clear");
         cout<<"Campo do Jogador 1"<<endl;
-        Onde_atirou(a,V);
+        Onde_atirou(a,V);a = -2;
         tabuleiro.Imprime_Campo_Mascara();
         cout<<"Campo do Jogador 2"<<endl;
-        Onde_atirou(a2,V2);
+        Onde_atirou(a2,V2);a2 = -2;
         tabuleiro2.Imprime_Campo_Mascara();
         cout << "Jogador 2 Atire!!"<<endl;
         a2 = ATIRAR(&tabuleiro2,&num_tiros2);
@@ -187,6 +165,8 @@ int ATIRAR(Tabuleiro *tabuleiro,int *num_tiros){
 //contem exatamente onde o barco foi atingido entao essa funcao decrementa a vida do respectivo barco
 void Onde_atirou(int a, Barco V[11])
 { 
+    if(a==-2)
+        return;
     if(a!=-1){
         V[a].set_atingido();
         //V[a].getBarco();
