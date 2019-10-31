@@ -51,7 +51,7 @@ void JOGO_SOZINHO(int dificuldade)
     system("clear");
     Barco V[11];
     Vetor_de_Barcos(V);
-    Tabuleiro tabuleiro(dificuldade);
+    Tabuleiro tabuleiro(dificuldade,1);
     int num_tiros = 50, a=-2;
     do
     {
@@ -68,13 +68,32 @@ void JOGO_SOZINHO(int dificuldade)
     
 }
 
+int opcao_deJogo()
+{
+    int opcao;
+    while(opcao<1 || opcao>2){
+        cout<<"cuide com a opcao"<<endl;
+        cin >> opcao;
+    }
+    return opcao;
+}
+
 void JOGO_EM_DUPLA(int dificuldade)
 {
     //Criacao do ambiente
+    int opcao;
     Barco V[11],V2[11];
     Vetor_de_Barcos(V);
     Vetor_de_Barcos(V2);
-    Tabuleiro tabuleiro(dificuldade), tabuleiro2(dificuldade);
+    cout<<"Jogador 1 quer colocar os barcos ou quer que o computador coloque randomicamente?"<<endl
+        <<"1 - Randomico"<<endl<<"2 - Colocar"<<endl;
+    opcao = opcao_deJogo();
+    Tabuleiro tabuleiro(dificuldade,opcao);
+    system("clear");
+    cout<<"Jogador 2 quer colocar os barcos ou quer que o computador coloque randomicamente?"<<endl
+        <<"1 - Randomico"<<endl<<"2 - Colocar"<<endl;
+    opcao = opcao_deJogo();
+    Tabuleiro tabuleiro2(dificuldade,opcao);
     int num_tiros  = 50, num_tiros2 = 50, a=-2,a2=-2;
     
     do
@@ -87,7 +106,7 @@ void JOGO_EM_DUPLA(int dificuldade)
         Onde_atirou(a2,V2);a2 = -2;
         tabuleiro2.Imprime_Campo_Mascara();
         cout << "Jogador 1 Atire!!"<<endl;
-        a = ATIRAR(&tabuleiro,&num_tiros);
+        a = ATIRAR(&tabuleiro2,&num_tiros);
         system("clear");
         cout<<"Campo do Jogador 1"<<endl;
         Onde_atirou(a,V);a = -2;
@@ -96,7 +115,7 @@ void JOGO_EM_DUPLA(int dificuldade)
         Onde_atirou(a2,V2);a2 = -2;
         tabuleiro2.Imprime_Campo_Mascara();
         cout << "Jogador 2 Atire!!"<<endl;
-        a2 = ATIRAR(&tabuleiro2,&num_tiros2);
+        a2 = ATIRAR(&tabuleiro,&num_tiros2);
         
     } while (a != -10);
     system("clear");

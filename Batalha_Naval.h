@@ -10,5 +10,6 @@ int     ATIRAR(Tabuleiro *tabuleiro,int*);
 void    Vetor_de_Barcos(Barco V[]);
 void    Onde_atirou(int a, Barco V[11]);
 int     dificuldade();
+int     opcao_deJogo();
 
 #endif
