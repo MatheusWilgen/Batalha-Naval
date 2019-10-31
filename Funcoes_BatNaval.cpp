@@ -12,9 +12,9 @@ void MENU()
     
     int opcao,nivel;
     cout<<endl<< "BEM VINDO AO BATALHA NAVAL!"<<endl<<endl;
-    cout<< "Para jogar sozinho digite 1"<<endl;
-    cout<< "Para jogar em dupla digite 2"<<endl;
-    cout<< "Para sair digite 0"<<endl<<endl;
+    cout<< "1 - Para jogar sozinho"<<endl;
+    cout<< "2 - Para jogar em dupla"<<endl;
+    cout<< "0 - Para sair"<<endl<<endl;
 
     //outras opçoes
    
@@ -26,7 +26,6 @@ void MENU()
             JOGO_SOZINHO(nivel);
         }
         if(opcao == 2){
-            nivel = dificuldade();
             JOGO_EM_DUPLA(nivel);
         }
 
@@ -36,13 +35,21 @@ int dificuldade()
 {   
     int a=0;
     while(a<1 || a>3){
-        cout<<"Qual dificuldade voce deseja jogar?"<<endl
-        <<"Para facil digite 1"<<endl<<"Para medio digite 2"<<endl
-        <<"Para dificil digite 3"<<endl;
+        cout<<"Os barcos serão posicionados randomicamente no tabuleiro, qual opçao voce deseja?"<<endl
+        <<"1 - Para navios na horizontal ou vertical"<<endl
+        <<"2 - Para navios na horizontal e/ou na vertical"<<endl
+        <<"3 - Para navios na navios na horizontal e/ou vertical e/ou diagonal"<<endl;
     
         cin >> a;
     }
     return a;
+}
+
+void Atualiza_score(int a,int* score)
+{   
+    if(a>-1)
+        *score+=1;
+    cout<<"score = "<<*score<<endl;
 }
 
 //Função principal para jogar sozinho
@@ -52,28 +59,33 @@ void JOGO_SOZINHO(int dificuldade)
     Barco V[11];
     Vetor_de_Barcos(V);
     Tabuleiro tabuleiro(dificuldade,1);
-    int num_tiros = 50, a=-2;
+    int num_tiros = 50, a=-2,score=0;
     do
     {
         system("clear");
+        Atualiza_score(a,&score);
         Onde_atirou(a,V);
         tabuleiro.Imprime_Campo_Mascara();
         tabuleiro.Imprime_Campo();
         a = ATIRAR(&tabuleiro,&num_tiros);
         
-        //tabuleiro.Imprime_Campo();
     } while (a != -10);
     system("clear");
     tabuleiro.Imprime_Campo();
+    cout<<"Acabou o jogo, sua pontuaçao foi " <<score<<endl;
     
 }
 
-int opcao_deJogo()
+int opcao_deJogo(int* nivel)
 {
     int opcao;
+    cin >> opcao;
     while(opcao<1 || opcao>2){
         cout<<"cuide com a opcao"<<endl;
         cin >> opcao;
+    }
+    if(opcao == 1){
+        *nivel = dificuldade();
     }
     return opcao;
 }
@@ -87,40 +99,60 @@ void JOGO_EM_DUPLA(int dificuldade)
     Vetor_de_Barcos(V2);
     cout<<"Jogador 1 quer colocar os barcos ou quer que o computador coloque randomicamente?"<<endl
         <<"1 - Randomico"<<endl<<"2 - Colocar"<<endl;
-    opcao = opcao_deJogo();
+    opcao = opcao_deJogo(&dificuldade);
     Tabuleiro tabuleiro(dificuldade,opcao);
     system("clear");
     cout<<"Jogador 2 quer colocar os barcos ou quer que o computador coloque randomicamente?"<<endl
         <<"1 - Randomico"<<endl<<"2 - Colocar"<<endl;
-    opcao = opcao_deJogo();
+    opcao = opcao_deJogo(&dificuldade);
     Tabuleiro tabuleiro2(dificuldade,opcao);
-    int num_tiros  = 50, num_tiros2 = 50, a=-2,a2=-2;
+    int num_tiros  = 50, num_tiros2 = 50, a=-2,a2=-2,score=0,score2=0;
     
     do
     {
         system("clear");
-        cout<<"Campo do Jogador 1"<<endl;
+        cout<<"Campo do Jogador 1  ";
+        Atualiza_score(a,&score);
         Onde_atirou(a,V);a = -2;
         tabuleiro.Imprime_Campo_Mascara();
-        cout<<"Campo do Jogador 2"<<endl;
+        cout<<"Campo do Jogador 2  ";
+        Atualiza_score(a2,&score2);
         Onde_atirou(a2,V2);a2 = -2;
         tabuleiro2.Imprime_Campo_Mascara();
         cout << "Jogador 1 Atire!!"<<endl;
         a = ATIRAR(&tabuleiro2,&num_tiros);
         system("clear");
-        cout<<"Campo do Jogador 1"<<endl;
+        cout<<"Campo do Jogador 1  ";
+        Atualiza_score(a,&score);
         Onde_atirou(a,V);a = -2;
         tabuleiro.Imprime_Campo_Mascara();
-        cout<<"Campo do Jogador 2"<<endl;
+        cout<<"Campo do Jogador 2  ";
+        Atualiza_score(a2,&score2);
         Onde_atirou(a2,V2);a2 = -2;
         tabuleiro2.Imprime_Campo_Mascara();
         cout << "Jogador 2 Atire!!"<<endl;
         a2 = ATIRAR(&tabuleiro,&num_tiros2);
         
-    } while (a != -10);
+    } while (a != -10 && a2!=-10);
     system("clear");
+    cout<<"Campo do Jogador 1  "<<endl;
     tabuleiro.Imprime_Campo();
+    cout<<"Campo do Jogador 2  "<<endl;
     tabuleiro2.Imprime_Campo();
+    Quem_Venceu(score,score2);
+}
+
+void Quem_Venceu(int score,int score2)
+{
+    if(score == score2){
+        cout << "EMPATOU"<<endl;
+    }
+    if(score>score2){
+        cout<<"Jogador 1 VENCEU!!!"<<endl;
+    }
+    if(score2>score){
+        cout << "Jogador 2 VENCEU!!!"<<endl;
+    }
 }
 
 //inicializa o vetor contendo os barcos
@@ -143,8 +175,7 @@ int ATIRAR(Tabuleiro *tabuleiro,int *num_tiros){
     int linha=-1, coluna=-1;
     //enquanto nao entrar com o dado certo nao continua o prog
     while(entrada_correta == false){
-        cout << "Entre com o local do tiro ex: A2 ou M4"<< endl
-             <<"Voce pode desistir a qualquer momento escrevendo: desisto"<<endl<<"tiros restantes = "<<*num_tiros<<endl;
+        cout << "Entre com o local do tiro ex: A2 ou M4 | "<<"Voce pode desistir a qualquer momento escrevendo: desisto |"<<" tiros restantes = "<<*num_tiros<<endl;
         string TIRO;
         cin >> TIRO;
         if(TIRO == "desisto"){desistir = true;break;}

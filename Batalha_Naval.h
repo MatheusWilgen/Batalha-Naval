@@ -10,6 +10,8 @@ int     ATIRAR(Tabuleiro *tabuleiro,int*);
 void    Vetor_de_Barcos(Barco V[]);
 void    Onde_atirou(int a, Barco V[11]);
 int     dificuldade();
-int     opcao_deJogo();
+int     opcao_deJogo(int* nivel);
+void    Atualiza_score(int a,int* score);
+void    Quem_Venceu(int score,int score2);
 
 #endif
