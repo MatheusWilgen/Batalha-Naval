@@ -3,7 +3,9 @@
 #include "Barcos.h"
 #include "Tabuleiro.h"
 #include <string>
-
+#include <experimental/random>
+#include <thread>         // std::this_thread::sleep_for
+#include <chrono>         // std::chrono::seconds
 
 using namespace std;
 
@@ -14,6 +16,7 @@ void MENU()
     cout<<endl<< "BEM VINDO AO BATALHA NAVAL!"<<endl<<endl;
     cout<< "1 - Para jogar sozinho"<<endl;
     cout<< "2 - Para jogar em dupla"<<endl;
+    cout<< "3 - Para jogar contra o computador"<<endl;
     cout<< "0 - Para sair"<<endl<<endl;
 
     //outras opçoes
@@ -27,6 +30,9 @@ void MENU()
         }
         if(opcao == 2){
             JOGO_EM_DUPLA(nivel);
+        }
+        if(opcao == 3){
+            JOGO_CONTRA_COMPUTADOR(nivel);
         }
 
 }
@@ -64,6 +70,8 @@ void JOGO_SOZINHO(int dificuldade)
     {
         system("clear");
         Atualiza_score(a,&score);
+        if(score < 28)
+            break;
         Onde_atirou(a,V);
         tabuleiro.Imprime_Campo_Mascara();
         tabuleiro.Imprime_Campo();
@@ -113,33 +121,248 @@ void JOGO_EM_DUPLA(int dificuldade)
         system("clear");
         cout<<"Campo do Jogador 1  ";
         Atualiza_score(a,&score);
+        if(score >= 28)
+            break;
         Onde_atirou(a,V);a = -2;
         tabuleiro.Imprime_Campo_Mascara();
         cout<<"Campo do Jogador 2  ";
         Atualiza_score(a2,&score2);
+        if(score2 >= 28)
+            break;
         Onde_atirou(a2,V2);a2 = -2;
         tabuleiro2.Imprime_Campo_Mascara();
         cout << "Jogador 1 Atire!!"<<endl;
         a = ATIRAR(&tabuleiro2,&num_tiros);
+        if(a==-10 || a == -9){break;}
         system("clear");
         cout<<"Campo do Jogador 1  ";
         Atualiza_score(a,&score);
+        if(score >= 28)
+            break;
         Onde_atirou(a,V);a = -2;
         tabuleiro.Imprime_Campo_Mascara();
         cout<<"Campo do Jogador 2  ";
         Atualiza_score(a2,&score2);
+        if(score2 >= 28)
+            break;
         Onde_atirou(a2,V2);a2 = -2;
         tabuleiro2.Imprime_Campo_Mascara();
         cout << "Jogador 2 Atire!!"<<endl;
         a2 = ATIRAR(&tabuleiro,&num_tiros2);
+        if(a2==-10 || a2 == -9){break;}
         
-    } while (a != -10 && a2!=-10);
+    } while (1);
     system("clear");
     cout<<"Campo do Jogador 1  "<<endl;
     tabuleiro.Imprime_Campo();
     cout<<"Campo do Jogador 2  "<<endl;
     tabuleiro2.Imprime_Campo();
-    Quem_Venceu(score,score2);
+
+    if(a==-9){
+        cout<<"Jogador 1 desistiu, Jogador 2 Venceu!"<<endl;
+    }else if(a2 == -9){
+        cout<<"Jogador 2 desistiu, Jogador 1 Venceu!"<<endl;
+    }else{
+        Quem_Venceu(score,score2);
+    }
+
+}
+
+
+void JOGO_CONTRA_COMPUTADOR(int dificuldade)
+{
+    //Criacao do ambiente
+    int opcao;
+    Barco V[11],V2[11];
+    Vetor_de_Barcos(V);
+    Vetor_de_Barcos(V2);
+    cout<<"Jogador quer colocar os barcos ou quer que o computador coloque randomicamente?"<<endl
+        <<"1 - Randomico"<<endl<<"2 - Colocar"<<endl;
+    opcao = opcao_deJogo(&dificuldade);
+    Tabuleiro tabuleiro(dificuldade,opcao);
+    system("clear");
+    //para o computador
+    cout<<"Qual dificuldade?"<<endl
+                <<"1 - Facil"<<endl
+                <<"2 - Medio"<<endl
+                <<"3 - Dificil"<<endl;
+    cin >> opcao;
+    dificuldade = experimental::randint(1,3);
+    Tabuleiro tabuleiro2(dificuldade,1);
+    int num_tiros  = 50, num_tiros2 = 50, a=-2,a2=-2,score=0,score2=0;
+
+    do
+    {
+        system("clear");
+        cout<<"Campo do Jogador  score = "<<score<<endl;
+        Onde_atirou(a,V);a = -2;
+        tabuleiro.Imprime_Campo_Mascara();
+        cout<<"Campo do Computador  ";
+        Atualiza_score(a2,&score2);
+        if(score2 >= 28)
+            break;
+        Onde_atirou(a2,V2);a2 = -2;
+        tabuleiro2.Imprime_Campo_Mascara();
+        cout << "Jogador Atire!!"<<endl;
+        a = ATIRAR(&tabuleiro2,&num_tiros);
+        if(a==-10||a==-9){break;}
+        system("clear");
+        cout<<"Campo do Jogador  ";
+        Atualiza_score(a,&score);
+        if(score >= 28)
+            break;
+        tabuleiro.Imprime_Campo_Mascara();
+        cout<<"Campo do Computador  ";
+        Atualiza_score(a2,&score2);
+        if(score2 >= 28)
+            break;
+        Onde_atirou(a2,V2);a2 = -2;
+        tabuleiro2.Imprime_Campo_Mascara();
+        cout << "Computador Atirando!!"<<endl;
+        this_thread::sleep_for (std::chrono::milliseconds(400));
+        a2 = ATIRAR_COMPUTADOR(&tabuleiro,&num_tiros2,opcao);
+        if(a2==-10){break;}
+        
+        
+    } while (1);
+    system("clear");
+    cout<<"Campo do Jogador  "<<endl;
+    tabuleiro.Imprime_Campo();
+    cout<<"Campo do Computador  "<<endl;
+    tabuleiro2.Imprime_Campo();
+    if(a==-9){
+        cout<<"Jogador desistiu, Computador Venceu!"<<endl;
+    }else{
+        Quem_Venceu_PC(score,score2);
+    }
+   
+}
+
+int ATIRAR_COMPUTADOR(Tabuleiro *tabuleiro,int *num_tiros,int dificuldade)
+{
+    //Entrada do local do tiro
+    bool entrada_correta = false;
+    int linha=-1, coluna=-1;
+    //enquanto nao entrar com o dado certo nao continua o prog
+    
+    if(dificuldade == 1)
+    {
+        int sorte;
+        while(entrada_correta == false)
+        {
+        
+            linha = experimental::randint(0,14);
+            coluna = experimental::randint(0,14);
+            sorte  = experimental::randint(0,10);
+
+            if(linha>=0 && linha <= 14 && coluna >= 0 && coluna <= 14){
+                entrada_correta = true;
+            }
+
+            //Inteligencia
+            if(sorte >= 8)
+            {
+                if(tabuleiro->getCampo_inteiros(linha,coluna) != -1)
+                {
+                    entrada_correta = true;
+                }else{
+                    entrada_correta = false;
+                }   
+            }
+             
+            
+            if(tabuleiro->getCampo_Mascara(linha,coluna) == -1){
+                entrada_correta = false;
+                //cout << "Nesse local ja foi dado um tiro, tente outro"<<endl;
+            }
+        }
+    }
+
+
+    if(dificuldade == 2)
+    {
+        int sorte;
+        while(entrada_correta == false)
+        {
+        
+            linha = experimental::randint(0,14);
+            coluna = experimental::randint(0,14);
+            sorte  = experimental::randint(0,10);
+
+            if(linha>=0 && linha <= 14 && coluna >= 0 && coluna <= 14){
+                entrada_correta = true;
+            }
+
+            //Inteligencia
+            if(sorte >= 3)
+            {
+                if(tabuleiro->getCampo_inteiros(linha,coluna) != -1)
+                {
+                    entrada_correta = true;
+                }else{
+                    entrada_correta = false;
+                }   
+            }
+             
+            
+            if(tabuleiro->getCampo_Mascara(linha,coluna) == -1){
+                entrada_correta = false;
+                //cout << "Nesse local ja foi dado um tiro, tente outro"<<endl;
+            }
+        }
+    }
+
+
+    if(dificuldade == 3)
+    {
+        while(entrada_correta == false)
+        {
+            linha = experimental::randint(0,14);
+            coluna = experimental::randint(0,14);
+
+            if(linha>=0 && linha <= 14 && coluna >= 0 && coluna <= 14){
+                entrada_correta = true;
+            }
+
+            //Inteligencia
+            //se é uma posicao de navio entao acerta
+            if(tabuleiro->getCampo_inteiros(linha,coluna) != -1){
+                entrada_correta = true;
+            }else{
+                entrada_correta = false;
+            }
+            if(tabuleiro->getCampo_Mascara(linha,coluna) == -1){
+                entrada_correta = false;
+                //cout << "Nesse local ja foi dado um tiro, tente outro"<<endl;
+            }
+        }
+    }
+    
+    *num_tiros-=1;
+    if(*num_tiros == 0){
+        cout<<"acabou os tiros"<<endl;
+        return -10;
+    }
+    
+    //coloca um 0 se um barco foi atingido ou um X se foi na agua
+    tabuleiro->setMascara(linha,coluna);
+
+    //retorna o numero do barco ou -1 se foi na agua
+    int a = tabuleiro->getCampo_inteiros(linha,coluna);
+    return a;
+}
+
+void Quem_Venceu_PC(int score,int score2)
+{
+    if(score == score2){
+        cout << "EMPATOU"<<endl;
+    }
+    if(score>score2){
+        cout<<"Jogador VENCEU!!!"<<endl;
+    }
+    if(score2>score){
+        cout << "Computador VENCEU!!!"<<endl;
+    }
 }
 
 void Quem_Venceu(int score,int score2)
@@ -168,7 +391,7 @@ void Vetor_de_Barcos(Barco V[]){
     V[10].setBarco("Porta avioes",4);
 }
 
-//Gerencia os tiros ou a desistencia
+//Gerencia os tiros ou a desistencia se desistir retorna -9
 int ATIRAR(Tabuleiro *tabuleiro,int *num_tiros){
     //Entrada do local do tiro
     bool entrada_correta = false,desistir=false;
@@ -178,7 +401,7 @@ int ATIRAR(Tabuleiro *tabuleiro,int *num_tiros){
         cout << "Entre com o local do tiro ex: A2 ou M4 | "<<"Voce pode desistir a qualquer momento escrevendo: desisto |"<<" tiros restantes = "<<*num_tiros<<endl;
         string TIRO;
         cin >> TIRO;
-        if(TIRO == "desisto"){desistir = true;break;}
+        if(TIRO == "desisto" || TIRO == "DESISTO"){desistir = true;break;}
         //tratando a entrada pois é do tipo A2
         coluna = TIRO[0]- 'A';
         if(TIRO.length() == 3){
@@ -201,7 +424,7 @@ int ATIRAR(Tabuleiro *tabuleiro,int *num_tiros){
     }
     if(desistir == true)
     {
-        return -10;
+        return -9;
     }
     //coloca um 0 se um barco foi atingido ou um X se foi na agua
     tabuleiro->setMascara(linha,coluna);
