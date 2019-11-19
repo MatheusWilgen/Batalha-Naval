@@ -14,8 +14,6 @@ public:
         if(opcao == 2){
             Distribui_Barcos_JOGADOR();
         }
-        //Imprime_Campo();
-        //Imprime_Campo_inteiros();
     }
     void setMascara(int linha,int coluna);
     void Inicia_Campo(char Campo[][15]);
@@ -38,7 +36,5 @@ private:
     int  Campo_Codigos[15][15];
     char Campo_Mascara[15][15];
 };
-
-
 
 #endif

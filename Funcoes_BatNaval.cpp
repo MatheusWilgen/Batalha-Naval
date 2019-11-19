@@ -9,23 +9,20 @@
 
 using namespace std;
 
-void MENU()
+void Batalha_naval::MENU()
 {
-    
     int opcao,nivel;
     cout<<endl<< "BEM VINDO AO BATALHA NAVAL!"<<endl<<endl;
     cout<< "1 - Para jogar sozinho"<<endl;
     cout<< "2 - Para jogar em dupla"<<endl;
     cout<< "3 - Para jogar contra o computador"<<endl;
     cout<< "0 - Para sair"<<endl<<endl;
-
-    //outras opçoes
    
     cin >> opcao;
         if(0)
             return;
         if(opcao == 1){
-            nivel = dificuldade();
+            nivel = dificuldade<int>();
             JOGO_SOZINHO(nivel);
         }
         if(opcao == 2){
@@ -34,12 +31,11 @@ void MENU()
         if(opcao == 3){
             JOGO_CONTRA_COMPUTADOR(nivel);
         }
-
 }
-
-int dificuldade()
+template <typename level>
+level Batalha_naval::dificuldade()
 {   
-    int a=0;
+    level a = -1;
     while(a<1 || a>3){
         cout<<"Os barcos serão posicionados randomicamente no tabuleiro, qual opçao voce deseja?"<<endl
         <<"1 - Para navios na horizontal ou vertical"<<endl
@@ -51,7 +47,7 @@ int dificuldade()
     return a;
 }
 
-void Atualiza_score(int a,int* score)
+void Batalha_naval::Atualiza_score(int a,int* score)
 {   
     if(a>-1)
         *score+=1;
@@ -59,10 +55,10 @@ void Atualiza_score(int a,int* score)
 }
 
 //Função principal para jogar sozinho
-void JOGO_SOZINHO(int dificuldade)
+void Batalha_naval::JOGO_SOZINHO(int dificuldade)
 {
     system("clear");
-    Barco V[11];
+    //agora  Barco V[11];
     Vetor_de_Barcos(V);
     Tabuleiro tabuleiro(dificuldade,1);
     int num_tiros = 50, a=-2,score=0;
@@ -70,21 +66,26 @@ void JOGO_SOZINHO(int dificuldade)
     {
         system("clear");
         Atualiza_score(a,&score);
-        if(score < 28)
+        if(score >= 28)
             break;
         Onde_atirou(a,V);
         tabuleiro.Imprime_Campo_Mascara();
-        tabuleiro.Imprime_Campo();
         a = ATIRAR(&tabuleiro,&num_tiros);
+        if(a==-10 || a == -9){break;}
         
-    } while (a != -10);
+    } while (1);
     system("clear");
     tabuleiro.Imprime_Campo();
-    cout<<"Acabou o jogo, sua pontuaçao foi " <<score<<endl;
+    if(a==-9){
+        cout<<"Desistiu"<<endl;
+    }else{
+        cout<<"Acabou o jogo, sua pontuaçao foi " <<score<<endl;
+    }
+    
     
 }
 
-int opcao_deJogo(int* nivel)
+int Batalha_naval::opcao_deJogo(int* nivel)
 {
     int opcao;
     cin >> opcao;
@@ -93,16 +94,15 @@ int opcao_deJogo(int* nivel)
         cin >> opcao;
     }
     if(opcao == 1){
-        *nivel = dificuldade();
+        *nivel = dificuldade<int>();
     }
     return opcao;
 }
 
-void JOGO_EM_DUPLA(int dificuldade)
+void Batalha_naval::JOGO_EM_DUPLA(int dificuldade)
 {
     //Criacao do ambiente
     int opcao;
-    Barco V[11],V2[11];
     Vetor_de_Barcos(V);
     Vetor_de_Barcos(V2);
     cout<<"Jogador 1 quer colocar os barcos ou quer que o computador coloque randomicamente?"<<endl
@@ -169,11 +169,10 @@ void JOGO_EM_DUPLA(int dificuldade)
 }
 
 
-void JOGO_CONTRA_COMPUTADOR(int dificuldade)
+void Batalha_naval::JOGO_CONTRA_COMPUTADOR(int dificuldade)
 {
     //Criacao do ambiente
     int opcao;
-    Barco V[11],V2[11];
     Vetor_de_Barcos(V);
     Vetor_de_Barcos(V2);
     cout<<"Jogador quer colocar os barcos ou quer que o computador coloque randomicamente?"<<endl
@@ -238,7 +237,7 @@ void JOGO_CONTRA_COMPUTADOR(int dificuldade)
    
 }
 
-int ATIRAR_COMPUTADOR(Tabuleiro *tabuleiro,int *num_tiros,int dificuldade)
+int Batalha_naval::ATIRAR_COMPUTADOR(Tabuleiro *tabuleiro,int *num_tiros,int dificuldade)
 {
     //Entrada do local do tiro
     bool entrada_correta = false;
@@ -352,7 +351,7 @@ int ATIRAR_COMPUTADOR(Tabuleiro *tabuleiro,int *num_tiros,int dificuldade)
     return a;
 }
 
-void Quem_Venceu_PC(int score,int score2)
+void Batalha_naval::Quem_Venceu_PC(int score,int score2)
 {
     if(score == score2){
         cout << "EMPATOU"<<endl;
@@ -365,7 +364,7 @@ void Quem_Venceu_PC(int score,int score2)
     }
 }
 
-void Quem_Venceu(int score,int score2)
+void Batalha_naval::Quem_Venceu(int score,int score2)
 {
     if(score == score2){
         cout << "EMPATOU"<<endl;
@@ -379,7 +378,7 @@ void Quem_Venceu(int score,int score2)
 }
 
 //inicializa o vetor contendo os barcos
-void Vetor_de_Barcos(Barco V[]){
+void Batalha_naval::Vetor_de_Barcos(Barco V[]){
     for(int i = 0; i<3; i++){
         V[i].setBarco("Fragata",2);
         V[i+3].setBarco("Balizador",2);
@@ -392,7 +391,7 @@ void Vetor_de_Barcos(Barco V[]){
 }
 
 //Gerencia os tiros ou a desistencia se desistir retorna -9
-int ATIRAR(Tabuleiro *tabuleiro,int *num_tiros){
+int Batalha_naval::ATIRAR(Tabuleiro *tabuleiro,int *num_tiros){
     //Entrada do local do tiro
     bool entrada_correta = false,desistir=false;
     int linha=-1, coluna=-1;
@@ -436,15 +435,11 @@ int ATIRAR(Tabuleiro *tabuleiro,int *num_tiros){
 
 //Se o a contem -1 significa que foi um tiro na agua, caso contrario o a 
 //contem exatamente onde o barco foi atingido entao essa funcao decrementa a vida do respectivo barco
-void Onde_atirou(int a, Barco V[11])
+void Batalha_naval::Onde_atirou(int a, Barco V[11])
 { 
     if(a==-2)
         return;
     if(a!=-1){
         V[a].set_atingido();
-        //V[a].getBarco();
     }
 }
-
-
-  

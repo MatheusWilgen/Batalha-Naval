@@ -2,8 +2,9 @@
 
 int main(void)
 {
+    Batalha_naval BATALHA_JOGO;
 
-    MENU();
+    BATALHA_JOGO.MENU();
 
     return 0;
 }
